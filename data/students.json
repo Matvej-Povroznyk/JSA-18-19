@@ -50,19 +50,6 @@
       ],
       "email": "anastasia.ivanova@example.com",
       "isEnrolled": true
-    },
-    {
-      "name": "Mykola Bondarenko",
-      "age": 15,
-      "course": "Cybersecurity",
-      "skills": [
-        "Networking",
-        "Ethical Hacking",
-        "Linux"
-      ],
-      "email": "mykola.bondarenko@example.com",
-      "isEnrolled": true,
-      "id": "5"
     }
   ],
   "$schema": "./node_modules/json-server/schema.json"

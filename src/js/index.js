@@ -35,28 +35,40 @@ function openEditModal(student) {
         form.name.value = student.name;
         form.age.value = student.age;
         form.course.value = student.course;
-        form.skills.value = (student.skills || []).join(", ");
+        form.skills.value = student.skills.join(", ") || "";
         form.email.value = student.email;
         form.isEnrolled.checked = student.isEnrolled;
 
-        form.onsubmit = (e) => {
+        console.log(student);
+
+        form.onsubmit = async (e) => {
           e.preventDefault();
 
           const updatedData = {
             name: form.name.value.trim(),
             age: Number(form.age.value),
             course: form.course.value.trim(),
-            skills: parseSkills(form.skills.value),
+            skills: form.skills.value
+              .trim()
+              .split(/\s*,\s*/)
+              .filter(Boolean),
             email: form.email.value.trim(),
             isEnrolled: form.isEnrolled.checked,
           };
 
-          updateStudent(student.id, updatedData)
-            .then(() => {
-              instance.close();
-              return getStudents().then(renderStudents);
-            })
-            .catch((err) => console.error(err));
+          // updateStudent(student.id, updatedData)
+          //   .then(() => {
+          //     instance.close();
+          //     return getStudents().then(renderStudents);
+          //   })
+          //   .catch((err) => console.error(err));
+          try {
+            await updateStudent(student.id, updatedData);
+            instance.close();
+            renderStudents(await getStudents());
+          } catch (err) {
+            console.error(err);
+          }
         };
       },
     },
@@ -65,16 +77,24 @@ function openEditModal(student) {
   editModal.show();
 }
 
-function getStudents() {
-  return fetch(API_URL)
-    .then((res) => {
-      if (!res.ok) throw new Error(`Помилка ${res.status}: ${res.statusText}`);
-      return res.json();
-    })
-    .catch((err) => {
-      console.error(err);
-      return [];
-    });
+async function getStudents() {
+  // return fetch(API_URL)
+  //   .then((res) => {
+  //     if (!res.ok) throw new Error(`Помилка ${res.status}: ${res.statusText}`);
+  //     return res.json();
+  //   })
+  //   .catch((err) => {
+  //     console.error(err);
+  //     return [];
+  //   });
+  try {
+    const res = await fetch(API_URL);
+    if (!res.ok) throw new Error(`Помилка ${res.status}: ${res.statusText}`);
+    return res.json();
+  } catch (err) {
+    console.error(err);
+    return [];
+  }
 }
 
 function renderStudents(students) {
@@ -117,7 +137,7 @@ function renderStudents(students) {
   studentsTableBody.innerHTML = markup;
 }
 
-function addStudent(e) {
+async function addStudent(e) {
   e.preventDefault();
 
   const newStudent = {
@@ -132,61 +152,95 @@ function addStudent(e) {
     isEnrolled: addStudentsForm.isEnrolled.checked,
   };
 
-  fetch(API_URL, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(newStudent),
-  })
-    .then((res) => {
-      if (!res.ok) throw new Error(`Помилка: ${res.statusText}`);
-      addStudentsForm.reset();
-      return getStudents().then(renderStudents);
-    })
-    .catch((err) => console.error(err));
+  // fetch(API_URL, {
+  //   method: "POST",
+  //   headers: { "Content-Type": "application/json" },
+  //   body: JSON.stringify(newStudent),
+  // })
+  //   .then((res) => {
+  //     if (!res.ok) throw new Error(`Помилка: ${res.statusText}`);
+  //     addStudentsForm.reset();
+  //     return getStudents().then(renderStudents);
+  //   })
+  //   .catch((err) => console.error(err));
+  try {
+    const res = await fetch(API_URL, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(newStudent),
+    });
+    if (!res.ok) throw new Error(`Помилка: ${res.statusText}`);
+    addStudentsForm.reset();
+    renderStudents(await getStudents());
+  } catch (err) {}
 }
 
-function updateStudent(id, data) {
-  return fetch(`${API_URL}/${id}`, {
+async function updateStudent(id, data) {
+  // return fetch(`${API_URL}/${id}`, {
+  //   method: "PUT",
+  //   headers: { "Content-Type": "application/json" },
+  //   body: JSON.stringify(data),
+  // }).then((res) => {
+  //   if (!res.ok) throw new Error(`Error: ${res.statusText}`);
+  // });
+  const res = await fetch(`${API_URL}/${id}`, {
     method: "PUT",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(data),
-  }).then((res) => {
-    if (!res.ok) throw new Error(`Error: ${res.statusText}`);
   });
+  if (!res.ok) throw new Error(`Error: ${res.statusText}`);
 }
 
-function deleteStudent(id) {
-  return fetch(`${API_URL}/${id}`, { method: "DELETE" }).then((res) => {
-    if (!res.ok) throw new Error(`Помилка: ${res.statusText}`);
-  });
+async function deleteStudent(id) {
+  // return fetch(`${API_URL}/${id}`, { method: "DELETE" }).then((res) => {
+  //   if (!res.ok) throw new Error(`Помилка: ${res.statusText}`);
+  // });
+  const res = await fetch(`${API_URL}/${id}`, { method: "DELETE" });
+  if (!res.ok) throw new Error(`Помилка: ${res.statusText}`);
 }
 
-function getStudentById(id) {
-  return fetch(`${API_URL}/${id}`).then((res) => {
-    if (!res.ok) throw new Error(`Помилка: ${res.statusText}`);
-    return res.json();
-  });
+async function getStudentById(id) {
+  // return fetch(`${API_URL}/${id}`).then((res) => {
+  //   if (!res.ok) throw new Error(`Помилка: ${res.statusText}`);
+  //   return res.json();
+  // });
+  const res = await fetch(`${API_URL}/${id}`);
+  if (!res.ok) throw new Error(`Помилка: ${res.statusText}`);
+  return res.json();
 }
 
-function handleTableClick(e) {
+async function handleTableClick(e) {
   const btn = e.target.closest("[data-action]");
   if (!btn) return;
 
   const { action, id } = btn.dataset;
 
   if (action === "delete") {
-    deleteStudent(id)
-      .then(() => btn.closest("tr").remove())
-      .catch((err) => console.error(err));
+    // deleteStudent(id)
+    //   .then(() => btn.closest("tr").remove())
+    //   .catch((err) => console.error(err));
+    try {
+      const res = await deleteStudent(id);
+      btn.closest("tr").remove();
+    } catch (err) {
+      console.error(err);
+    }
   } else if (action === "edit") {
-    getStudentById(id)
-      .then(openEditModal)
-      .catch((err) => console.error(err));
+    // getStudentById(id)
+    //   .then(openEditModal)
+    //   .catch((err) => console.error(err));
+    try {
+      const student = await getStudentById(id);
+      openEditModal(student);
+    } catch (err) {
+      console.error(err);
+    }
   }
 }
 
-getStudentsBtn.addEventListener("click", () =>
-  getStudents().then(renderStudents),
-);
+getStudentsBtn.addEventListener("click", async () => {
+  const students = await getStudents();
+  renderStudents(students);
+});
 addStudentsForm.addEventListener("submit", addStudent);
 studentsTableBody.addEventListener("click", handleTableClick);
