@@ -24,7 +24,6 @@
     "parcel": "^2.16.4"
   },
   "dependencies": {
-    "basiclightbox": "^5.0.4",
-    "serviceapi": "github:Matvej-Povroznyk/MODULE-Service-Api"
+    "basiclightbox": "^5.0.4"
   }
 }

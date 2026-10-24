@@ -26,7 +26,6 @@
       "isEnrolled": true
     },
     {
-      "id": "3",
       "name": "Dmytro Shevchenko",
       "age": 14,
       "course": "Mobile App Development",
@@ -36,7 +35,8 @@
         "Android Studio"
       ],
       "email": "dmytro.shevchenko@example.com",
-      "isEnrolled": false
+      "isEnrolled": false,
+      "id": "3"
     },
     {
       "id": "4",
