@@ -1,0 +1,39 @@
+var e={};e=(function e(t,n,o){function r(l,i){if(!n[l]){if(!t[l]){var a=void 0;if(!i&&a)return a(l,!0);if(u)return u(l,!0);var s=Error("Cannot find module '"+l+"'");throw s.code="MODULE_NOT_FOUND",s}var c=n[l]={exports:{}};t[l][0].call(c.exports,function(e){return r(t[l][1][e]||e)},c,c.exports,e,t,n,o)}return n[l].exports}for(var u=void 0,l=0;l<o.length;l++)r(o[l]);return r})({1:[function(e,t,n){Object.defineProperty(n,"__esModule",{value:!0}),n.create=n.visible=void 0;var o=function(e){var t=arguments.length>1&&void 0!==arguments[1]&&arguments[1],n=document.createElement("div");return n.innerHTML=e.trim(),!0===t?n.children:n.firstChild},r=function(e,t){var n=e.children;return 1===n.length&&n[0].tagName===t},u=function(e){return null!=(e=e||document.querySelector(".basicLightbox"))&&!0===e.ownerDocument.body.contains(e)};n.visible=u,n.create=function(e,t){var n,l,i,a,s,c,d,m=(n=e=function(e){var t="string"==typeof e,n=e instanceof HTMLElement==1;if(!1===t&&!1===n)throw Error("Content must be a DOM element/node or string");return!0===t?Array.from(o(e,!0)):"TEMPLATE"===e.tagName?[e.content.cloneNode(!0)]:Array.from(e.children)}(e),l=t=function(){var e=arguments.length>0&&void 0!==arguments[0]?arguments[0]:{};if(null==(e=Object.assign({},e)).closable&&(e.closable=!0),null==e.className&&(e.className=""),null==e.onShow&&(e.onShow=function(){}),null==e.onClose&&(e.onClose=function(){}),"boolean"!=typeof e.closable)throw Error("Property `closable` must be a boolean");if("string"!=typeof e.className)throw Error("Property `className` must be a string");if("function"!=typeof e.onShow)throw Error("Property `onShow` must be a function");if("function"!=typeof e.onClose)throw Error("Property `onClose` must be a function");return e}(t),a=(i=o('\n		<div class="basicLightbox '.concat(l.className,'">\n			<div class="basicLightbox__placeholder" role="dialog"></div>\n		</div>\n	'))).querySelector(".basicLightbox__placeholder"),n.forEach(function(e){return a.appendChild(e)}),s=r(a,"IMG"),c=r(a,"VIDEO"),d=r(a,"IFRAME"),!0===s&&i.classList.add("basicLightbox--img"),!0===c&&i.classList.add("basicLightbox--video"),!0===d&&i.classList.add("basicLightbox--iframe"),i),h=function(e){var n;return!1!==t.onClose(f)&&(n=function(){if("function"==typeof e)return e(f)},m.classList.remove("basicLightbox--visible"),setTimeout(function(){return!1===u(m)||m.parentElement.removeChild(m),n()},410),!0)};!0===t.closable&&m.addEventListener("click",function(e){e.target===m&&h()});var f={element:function(){return m},visible:function(){return u(m)},show:function(e){var n;return!1!==t.onShow(f)&&(n=function(){if("function"==typeof e)return e(f)},document.body.appendChild(m),setTimeout(function(){requestAnimationFrame(function(){return m.classList.add("basicLightbox--visible"),n()})},10),!0)},close:h};return f}},{}]},{},[1])(1);let t="http://localhost:3000/students",n=document.querySelector("#get-students-btn"),o=document.querySelector("#add-student-form"),r=document.querySelector("#students-table tbody");function u(n){e.create(`
+    <div class="modal">
+        <button type="button" class="close-modal-btn">&times;</button>
+        <h2>\u{420}\u{435}\u{434}\u{430}\u{433}\u{443}\u{432}\u{430}\u{442}\u{438} \u{441}\u{442}\u{443}\u{434}\u{435}\u{43D}\u{442}\u{430}</h2>
+        <form id="edit-student-form">
+            <label>\u{406}\u{43C}'\u{44F}: <input type="text" name="name" required /></label>
+            <label>\u{412}\u{456}\u{43A}: <input type="number" name="age" required /></label>
+            <label>\u{41A}\u{443}\u{440}\u{441}: <input type="text" name="course" required /></label>
+            <label>\u{41D}\u{430}\u{432}\u{438}\u{447}\u{43A}\u{438} (\u{447}\u{435}\u{440}\u{435}\u{437} \u{43A}\u{43E}\u{43C}\u{443}): <input type="text" name="skills"/></label>
+            <label>Email: <input type="email" name="email" required /></label>
+            <label>\u{417}\u{430}\u{43F}\u{438}\u{441}\u{430}\u{43D}\u{438}\u{439}: <input type="checkbox" name="isEnrolled" /></label>
+            <button type="submit">\u{417}\u{431}\u{435}\u{440}\u{435}\u{433}\u{442}\u{438}</button>
+        </form>
+    </div>
+    `,{closable:!1,onShow:e=>{let o=e.element().querySelector("#edit-student-form");e.element().querySelector(".close-modal-btn").onclick=()=>e.close(),o.name.value=n.name,o.age.value=n.age,o.course.value=n.course,o.skills.value=(n.skills||[]).join(", "),o.email.value=n.email,o.isEnrolled.checked=n.isEnrolled,o.onsubmit=r=>{var u;r.preventDefault();let a={name:o.name.value.trim(),age:Number(o.age.value),course:o.course.value.trim(),skills:parseSkills(o.skills.value),email:o.email.value.trim(),isEnrolled:o.isEnrolled.checked};(u=n.id,fetch(`${t}/${u}`,{method:"PUT",headers:{"Content-Type":"application/json"},body:JSON.stringify(a)}).then(e=>{if(!e.ok)throw Error(`Error: ${e.statusText}`)})).then(()=>(e.close(),l().then(i))).catch(e=>console.error(e))}}}).show()}function l(){return fetch(t).then(e=>{if(!e.ok)throw Error(`\u{41F}\u{43E}\u{43C}\u{438}\u{43B}\u{43A}\u{430} ${e.status}: ${e.statusText}`);return e.json()}).catch(e=>(console.error(e),[]))}function i(e){e&&(r.innerHTML=e.map(e=>{let t=e.skills&&e.skills.length>0?e.skills.join(", "):"Відсутні";return`
+        <tr>
+            <td>${e.id}</td>
+            <td>${e.name}</td>
+            <td>${e.age}</td>
+            <td>${e.course}</td>
+            <td>${t}</td>
+            <td>${e.email}</td>
+            <td>${e.isEnrolled?"Так":"Ні"}</td>
+            <td>
+                <button class="delete-btn" style="margin-bottom: 5px;" data-id="${e.id}" data-action="delete">
+                    <svg width="16px" height="16px" viewBox="0 0 16 16" fill="white" xmlns="http://www.w3.org/2000/svg">
+                        <path fill-rule="evenodd" clip-rule="evenodd" d="M16 8C16 12.4183 12.4183 16 8 16C3.58172 16 0 12.4183 0 8C0 3.58172 3.58172 0 8 0C12.4183 0 16 3.58172 16 8ZM10.3128 12.4341C9.62116 12.7956 8.83445 13 8 13C5.23858 13 3 10.7614 3 8C3 7.16555 3.20441 6.37884 3.5659 5.68722L10.3128 12.4341ZM12.4341 10.3128L5.68722 3.5659C6.37884 3.20441 7.16555 3 8 3C10.7614 3 13 5.23858 13 8C13 8.83445 12.7956 9.62116 12.4341 10.3128Z" fill="currentColor"/>
+                    </svg>
+                </button>
+                <button class="update-btn" data-id="${e.id}" data-action="edit">
+                    <svg width="16px" height="16px" viewBox="0 0 16 16" fill="white" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M13 0L16 3L9 10H6V7L13 0Z" fill="currentColor"/>
+                        <path d="M1 1V15H15V9H13V13H3V3H7V1H1Z" fill="currentColor"/>
+                    </svg>
+                </button>
+            </td>
+        </tr>
+      `}).join(""))}n.addEventListener("click",()=>l().then(i)),o.addEventListener("submit",function(e){e.preventDefault(),fetch(t,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({name:o.name.value.trim(),age:Number(o.age.value),course:o.course.value.trim(),skills:o.skills.value.trim().split(/\s*,\s*/).filter(Boolean),email:o.email.value.trim(),isEnrolled:o.isEnrolled.checked})}).then(e=>{if(!e.ok)throw Error(`\u{41F}\u{43E}\u{43C}\u{438}\u{43B}\u{43A}\u{430}: ${e.statusText}`);return o.reset(),l().then(i)}).catch(e=>console.error(e))}),r.addEventListener("click",function(e){let n=e.target.closest("[data-action]");if(!n)return;let{action:o,id:r}=n.dataset;"delete"===o?fetch(`${t}/${r}`,{method:"DELETE"}).then(e=>{if(!e.ok)throw Error(`\u{41F}\u{43E}\u{43C}\u{438}\u{43B}\u{43A}\u{430}: ${e.statusText}`)}).then(()=>n.closest("tr").remove()).catch(e=>console.error(e)):"edit"===o&&fetch(`${t}/${r}`).then(e=>{if(!e.ok)throw Error(`\u{41F}\u{43E}\u{43C}\u{438}\u{43B}\u{43A}\u{430}: ${e.statusText}`);return e.json()}).then(u).catch(e=>console.error(e))});
+//# sourceMappingURL=JSA-18-19.bdfcea06.js.map
